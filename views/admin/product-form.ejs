@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= product ? 'Modifier' : 'Nouveau produit' %> — Popstrap admin</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="/admin" class="logo">Pop<span>strap</span> <span style="color:var(--text-dim); font-size:13px; font-weight:400;">admin</span></a>
+      <nav class="nav-links"><a href="/admin">← Retour</a></nav>
+    </div>
+  </header>
+
+  <div class="wrap admin-shell">
+    <h1 style="font-size:24px;"><%= product ? 'Modifier le produit' : 'Nouveau produit' %></h1>
+
+    <% if (error) { %><div class="alert alert-error" style="max-width:560px;"><%= error %></div><% } %>
+
+    <form class="form-card" method="POST" enctype="multipart/form-data"
+          action="<%= product && product.id ? '/admin/produits/' + product.id + '/modifier' : '/admin/produits/nouveau' %>">
+
+      <div class="form-group">
+        <label>Nom du produit</label>
+        <input type="text" name="title" value="<%= product ? product.title : '' %>" required />
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description"><%= product ? product.description : '' %></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Prix (€)</label>
+          <input type="text" name="price" value="<%= product ? (product.price_cents/100).toFixed(2) : '' %>" required />
+        </div>
+        <div class="form-group">
+          <label>Prix barre (€, optionnel)</label>
+          <input type="text" name="compare_at_price" value="<%= product && product.compare_at_price_cents ? (product.compare_at_price_cents/100).toFixed(2) : '' %>" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Stock</label>
+          <input type="number" name="stock" value="<%= product ? product.stock : 0 %>" />
+        </div>
+        <div class="form-group">
+          <label>Statut</label>
+          <select name="status">
+            <option value="active" <%= product && product.status === 'active' ? 'selected' : '' %>>Actif (visible)</option>
+            <option value="draft" <%= product && product.status === 'draft' ? 'selected' : '' %>>Brouillon (cache)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Image — URL</label>
+        <input type="text" name="image_url" value="<%= product ? product.image_url : '' %>" placeholder="https://..." />
+      </div>
+
+      <div class="form-group">
+        <label>Ou envoyer une photo</label>
+        <input type="file" name="image_file" accept="image/*" />
+      </div>
+
+      <div class="form-group">
+        <label>Autres photos (galerie) — une URL par ligne</label>
+        <textarea name="gallery_text" placeholder="/img/photo1.jpg&#10;/img/photo2.jpg"><%= product ? product.gallery_text : '' %></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Coloris disponibles — une ligne par couleur, format "Nom|#codehex|/img/photo.jpg"</label>
+        <textarea name="colors_text" placeholder="Ocho Negro|#1C1C1C|/img/colors/ceramique-ocho-negro.jpg&#10;Huit Blanc|#F0EDE6|/img/colors/ceramique-huit-blanc.jpg"><%= product ? product.colors_text : '' %></textarea>
+        <p class="small-note">La photo est optionnelle (sinon seule la pastille de couleur s'affiche). Si elle est renseignée, cliquer sur le coloris change la photo principale de la fiche produit. Le stock reste global au produit.</p>
+      </div>
+
+      <button class="btn btn-primary btn-block" type="submit"><%= product ? 'Enregistrer' : 'Creer le produit' %></button>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "popstrap-site",
+  "version": "1.0.0",
+  "description": "Site e-commerce Popstrap avec panneau d'administration auto-gere et paiement PayPal + Stripe",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "csv-parse": "^5.5.6",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "multer": "^2.0.0",
+    "stripe": "^16.8.0"
+  },
+  "overrides": {
+    "qs": "^6.16.0"
+  }
+}

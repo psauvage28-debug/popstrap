@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= product.title %> — Popstrap</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <%
+    const gallery = JSON.parse(product.gallery || '[]');
+    const images = gallery.length ? gallery : [product.image_url];
+    const colors = JSON.parse(product.colors || '[]');
+
+    const BENEFITS = {
+      'bracelet-ceramique-royal-pop': { kicker: 'Collection Prestige', label: 'Matière', value: 'Biocéramique', label2: 'Surface', value2: 'Mate', punchline: 'Échange sans outil. Cinq secondes. Pas une de plus.' },
+      'bracelet-caouchouc-rosso': { kicker: 'Collection Sport', label: 'Matière', value: 'Caoutchouc', label2: 'Résistance', value2: 'Waterproof', punchline: 'Il ne vous lâche pas. Vous non plus.' },
+    };
+    const benefit = BENEFITS[product.handle];
+  %>
+
+  <section class="wrap product-hero">
+    <div>
+      <div class="product-gallery-main tilt">
+        <img src="<%= images[0] || 'https://placehold.co/700x700?text=Popstrap' %>" alt="<%= product.title %>" id="main-image" />
+      </div>
+      <% if (images.length > 1) { %>
+        <div class="product-gallery-thumbs">
+          <% images.forEach(function(src, i) { %>
+            <img src="<%= src %>" alt="" class="<%= i === 0 ? 'active' : '' %>" data-src="<%= src %>" />
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+    <div class="product-info">
+      <% if (benefit) { %><span class="kicker"><%= benefit.kicker %></span><% } %>
+      <h1><%= product.title %></h1>
+      <p class="desc"><%= product.description %></p>
+
+      <div class="price-row">
+        <span class="price"><%= (product.price_cents/100).toLocaleString('fr-FR', {style:'currency', currency: product.currency || 'EUR'}) %></span>
+        <% if (product.compare_at_price_cents) { %>
+          <span class="price-old"><%= (product.compare_at_price_cents/100).toLocaleString('fr-FR', {style:'currency', currency: product.currency || 'EUR'}) %></span>
+        <% } %>
+      </div>
+
+      <% if (colors.length) { %>
+        <div class="swatch-row">
+          <span class="swatch-label">Coloris — <span class="swatch-current" id="color-current"><%= colors[0].name %></span></span>
+          <div class="swatches">
+            <% colors.forEach(function(c, i) { %>
+              <button type="button" class="swatch-btn <%= i === 0 ? 'active' : '' %>" style="background:<%= c.hex %>" data-name="<%= c.name %>" data-image="<%= c.image || '' %>" title="<%= c.name %>"></button>
+            <% }); %>
+          </div>
+        </div>
+      <% } %>
+
+      <% if (benefit) { %>
+        <div class="benefit-trio">
+          <div><span class="b-label"><%= benefit.label %></span><span class="b-value"><%= benefit.value %></span></div>
+          <div><span class="b-label"><%= benefit.label2 %></span><span class="b-value"><%= benefit.value2 %></span></div>
+          <div><span class="b-label">Compatibilité</span><span class="b-value">Royal Pop</span></div>
+        </div>
+      <% } %>
+
+      <div class="qty-row">
+        <div class="qty-box">
+          <button type="button" id="qty-minus">−</button>
+          <input type="text" id="qty-input" value="1" readonly />
+          <button type="button" id="qty-plus">+</button>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="add-to-cart-btn">Ajouter au panier</button>
+      <a href="/panier" class="btn btn-outline btn-block" style="margin-top: 10px;">Voir le panier</a>
+
+      <% if (benefit) { %><p class="punchline"><%= benefit.punchline %></p><% } %>
+
+      <% if (product.stock <= 5 && product.stock > 0) { %>
+        <p class="stock-note">Plus que <%= product.stock %> en stock.</p>
+      <% } else if (product.stock <= 0) { %>
+        <p class="stock-note">Rupture de stock — les commandes reprendront bientot.</p>
+      <% } %>
+    </div>
+  </section>
+
+  <% if (others.length) { %>
+  <section class="wrap reveal">
+    <h2 class="section-title">Tu aimeras aussi</h2>
+    <div class="grid">
+      <% others.forEach(function(p) { %>
+        <a class="card tilt" href="/produit/<%= p.handle %>">
+          <div class="card-img"><img src="<%= p.image_url || 'https://placehold.co/500x500?text=Popstrap' %>" alt="<%= p.title %>" /></div>
+          <div class="card-body">
+            <p class="card-title"><%= p.title %></p>
+            <div class="price-row"><span class="price"><%= (p.price_cents/100).toLocaleString('fr-FR', {style:'currency', currency: p.currency || 'EUR'}) %></span></div>
+          </div>
+        </a>
+      <% }); %>
+    </div>
+  </section>
+  <% } %>
+
+  <%- include('partials/footer') %>
+
+  <script>
+    const PRODUCT = <%- JSON.stringify({
+      id: product.id,
+      title: product.title,
+      price_cents: product.price_cents,
+      image_url: product.image_url
+    }).replace(/</g, '\\u003c') %>;
+
+    const qtyInput = document.getElementById('qty-input');
+    document.getElementById('qty-minus').addEventListener('click', () => {
+      qtyInput.value = Math.max(1, parseInt(qtyInput.value, 10) - 1);
+    });
+    document.getElementById('qty-plus').addEventListener('click', () => {
+      qtyInput.value = parseInt(qtyInput.value, 10) + 1;
+    });
+    document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+      addToCart(PRODUCT, parseInt(qtyInput.value, 10));
+      window.location.href = '/panier';
+    });
+
+    // Galerie : clic sur une vignette change la photo principale (et le coloris correspondant si connu)
+    const mainImage = document.getElementById('main-image');
+    document.querySelectorAll('.product-gallery-thumbs img').forEach((thumb) => {
+      thumb.addEventListener('click', () => {
+        mainImage.src = thumb.dataset.src;
+        document.querySelectorAll('.product-gallery-thumbs img').forEach((t) => t.classList.remove('active'));
+        thumb.classList.add('active');
+
+        const matchingSwatch = Array.from(document.querySelectorAll('.swatch-btn')).find(
+          (b) => b.dataset.image === thumb.dataset.src
+        );
+        if (matchingSwatch) {
+          document.querySelectorAll('.swatch-btn').forEach((b) => b.classList.remove('active'));
+          matchingSwatch.classList.add('active');
+          if (colorCurrent) colorCurrent.textContent = matchingSwatch.dataset.name;
+        }
+      });
+    });
+
+    // Coloris : change la photo principale pour la vraie photo de ce coloris (le stock reste global au produit)
+    const colorCurrent = document.getElementById('color-current');
+    document.querySelectorAll('.swatch-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.swatch-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (colorCurrent) colorCurrent.textContent = btn.dataset.name;
+        if (btn.dataset.image) {
+          mainImage.src = btn.dataset.image;
+          document.querySelectorAll('.product-gallery-thumbs img').forEach((t) => {
+            t.classList.toggle('active', t.dataset.src === btn.dataset.image);
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

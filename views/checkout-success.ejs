@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Merci pour ta commande — Popstrap</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <section class="wrap center-py">
+    <h1 style="font-size: 34px; margin-bottom: 12px;">Merci pour ta commande 🎉</h1>
+    <p style="color: var(--text-dim); margin-bottom: 28px;">Ta commande a bien ete recue. Tu vas recevoir une confirmation par email.</p>
+    <a href="/" class="btn btn-primary">Retour a la boutique</a>
+  </section>
+
+  <%- include('partials/footer') %>
+  <script>localStorage.removeItem('popstrap_cart');</script>
+</body>
+</html>

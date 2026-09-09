@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Import Shopify — Popstrap admin</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="/admin" class="logo">Pop<span>strap</span> <span style="color:var(--text-dim); font-size:13px; font-weight:400;">admin</span></a>
+      <nav class="nav-links"><a href="/admin">← Retour</a></nav>
+    </div>
+  </header>
+
+  <div class="wrap admin-shell">
+    <h1 style="font-size:24px;">Importer ton catalogue Shopify</h1>
+    <p style="color:var(--text-dim); max-width:560px; margin-bottom:26px;">
+      Depuis ton admin Shopify : <strong>Produits → Exporter → "Tous les produits" → format CSV pour Excel, Numbers, ou autres tableurs</strong>.
+      Shopify t'envoie un lien de telechargement par email (ou le telecharge directement). Depose ensuite ce fichier CSV ici.
+    </p>
+    <p style="color:var(--text-dim); max-width:560px; margin-bottom:26px; font-size:13px;">
+      Note stock : les exports Shopify recents n'indiquent plus toujours la quantite en stock dans ce fichier.
+      Quand c'est le cas, les produits importes sont mis a stock 999 par defaut (donc visibles et achetables) —
+      pense a corriger le vrai stock produit par produit dans la liste ci-dessous si besoin.
+    </p>
+
+    <% if (result) { %>
+      <div class="alert alert-success" style="max-width:560px;"><%= result.count %> produit(s) importe(s) / mis a jour.</div>
+    <% } %>
+    <% if (error) { %>
+      <div class="alert alert-error" style="max-width:560px;"><%= error %></div>
+    <% } %>
+
+    <form class="form-card" method="POST" enctype="multipart/form-data" action="/admin/import">
+      <div class="form-group">
+        <label>Fichier CSV Shopify</label>
+        <input type="file" name="csv_file" accept=".csv" required />
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Importer</button>
+      <p class="small-note">Les produits existants (meme nom) seront mis a jour, les nouveaux seront ajoutes. Rien n'est supprime.</p>
+    </form>
+  </div>
+</body>
+</html>

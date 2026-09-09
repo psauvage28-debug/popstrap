@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Paiement — Popstrap</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <section class="wrap">
+    <h2 class="section-title">Paiement</h2>
+    <div class="checkout-layout">
+      <div>
+        <div id="checkout-lines"></div>
+      </div>
+      <div class="cart-summary">
+        <div class="summary-row"><span>Sous-total</span><span id="ck-subtotal"></span></div>
+        <div class="summary-row total"><span>Total</span><span id="ck-total"></span></div>
+
+        <div class="pay-buttons" id="pay-buttons">
+          <div id="paypal-button-container"></div>
+          <button class="btn btn-primary btn-block" id="stripe-btn">Payer par carte</button>
+        </div>
+        <p class="small-note" id="pay-status"></p>
+      </div>
+    </div>
+  </section>
+
+  <%- include('partials/footer') %>
+
+  <% if (config.paypalClientId) { %>
+  <script src="https://www.paypal.com/sdk/js?client-id=<%= config.paypalClientId %>&currency=EUR"></script>
+  <% } %>
+
+  <script>
+    const items = readCart();
+
+    function renderLines() {
+      const container = document.getElementById('checkout-lines');
+      if (items.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>Ton panier est vide.</p><a href="/" class="btn btn-primary">Retour a la boutique</a></div>';
+        document.getElementById('pay-buttons').style.display = 'none';
+        return;
+      }
+      container.innerHTML = items.map(function () {
+        return '<div class="cart-line"><img><div style="flex:1"><div class="line-title"></div><div class="line-meta"></div></div></div>';
+      }).join('');
+
+      const lineEls = container.querySelectorAll('.cart-line');
+      lineEls.forEach(function (el, i) {
+        const item = items[i];
+        el.querySelector('img').src = item.image_url || 'https://placehold.co/100x100?text=Popstrap';
+        el.querySelector('.line-title').textContent = item.title;
+        el.querySelector('.line-meta').textContent = 'Qte ' + item.qty + ' · ' + formatPrice(item.price_cents * item.qty);
+      });
+
+      const total = cartTotalCents();
+      document.getElementById('ck-subtotal').textContent = formatPrice(total);
+      document.getElementById('ck-total').textContent = formatPrice(total);
+    }
+
+    renderLines();
+
+    function cartPayload() {
+      return items.map(function (i) { return { id: i.id, qty: i.qty }; });
+    }
+
+    const statusEl = document.getElementById('pay-status');
+
+    if (window.paypal && items.length) {
+      paypal.Buttons({
+        style: { layout: 'horizontal', color: 'black', shape: 'pill', label: 'paypal' },
+        createOrder: function () {
+          return fetch('/checkout/paypal/create-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: cartPayload() })
+          }).then(function (r) { return r.json(); }).then(function (data) {
+            if (data.error) throw new Error(data.error);
+            return data.id;
+          });
+        },
+        onApprove: function (data) {
+          return fetch('/checkout/paypal/capture-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderID: data.orderID, items: cartPayload() })
+          }).then(function (r) { return r.json(); }).then(function (result) {
+            if (result.error) throw new Error(result.error);
+            localStorage.removeItem('popstrap_cart');
+            window.location.href = '/checkout/success';
+          });
+        },
+        onError: function (err) {
+          statusEl.textContent = 'Erreur PayPal : ' + err.message;
+        }
+      }).render('#paypal-button-container');
+    } else if (items.length) {
+      document.getElementById('paypal-button-container').innerHTML =
+        '<p class="small-note">PayPal n\'est pas encore configure sur ce site.</p>';
+    }
+
+    document.getElementById('stripe-btn').addEventListener('click', function () {
+      statusEl.textContent = 'Redirection vers le paiement securise...';
+      fetch('/checkout/stripe/create-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: cartPayload() })
+      }).then(function (r) { return r.json(); }).then(function (data) {
+        if (data.error) { statusEl.textContent = 'Erreur : ' + data.error; return; }
+        window.location.href = data.url;
+      });
+    });
+  </script>
+</body>
+</html>

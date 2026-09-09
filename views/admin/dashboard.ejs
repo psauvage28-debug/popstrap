@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — Popstrap</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="/admin" class="logo">Pop<span>strap</span> <span style="color:var(--text-dim); font-size:13px; font-weight:400;">admin</span></a>
+      <nav class="nav-links">
+        <a href="/" target="_blank">Voir le site ↗</a>
+        <form method="POST" action="/admin/logout" style="margin:0">
+          <button class="link-btn" type="submit">Deconnexion</button>
+        </form>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap admin-shell">
+    <div class="admin-header">
+      <h1 style="margin:0; font-size: 26px;">Tableau de bord</h1>
+      <div class="admin-nav">
+        <a href="/admin/import" class="btn btn-outline">Importer depuis Shopify</a>
+        <a href="/admin/produits/nouveau" class="btn btn-primary">+ Nouveau produit</a>
+      </div>
+    </div>
+
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="num"><%= products.length %></div>
+        <div class="label">Produits</div>
+      </div>
+      <div class="stat-card">
+        <div class="num"><%= (revenueCents/100).toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) %></div>
+        <div class="label">Ventes encaissees</div>
+      </div>
+      <div class="stat-card">
+        <div class="num"><%= orders.length %></div>
+        <div class="label">Commandes recentes</div>
+      </div>
+    </div>
+
+    <h2 class="section-title" style="font-size:18px;">Produits</h2>
+    <table class="table" style="margin-bottom: 44px;">
+      <thead>
+        <tr><th></th><th>Nom</th><th>Prix</th><th>Stock</th><th>Statut</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% products.forEach(function(p) { %>
+          <tr>
+            <td><img src="<%= p.image_url || 'https://placehold.co/80x80?text=%20' %>" alt=""></td>
+            <td><%= p.title %></td>
+            <td><%= (p.price_cents/100).toLocaleString('fr-FR', {style:'currency', currency: p.currency || 'EUR'}) %></td>
+            <td><%= p.stock %></td>
+            <td><span class="badge <%= p.status %>"><%= p.status === 'active' ? 'Actif' : 'Brouillon' %></span></td>
+            <td>
+              <div class="icon-btn-row">
+                <a href="/admin/produits/<%= p.id %>/modifier" class="btn btn-outline" style="padding:6px 14px; font-size:13px;">Modifier</a>
+                <form method="POST" action="/admin/produits/<%= p.id %>/supprimer" onsubmit="return confirm('Supprimer ce produit ?');" style="margin:0">
+                  <button class="btn btn-outline" style="padding:6px 14px; font-size:13px;" type="submit">Supprimer</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }); %>
+        <% if (products.length === 0) { %>
+          <tr><td colspan="6" style="color: var(--text-dim); text-align:center; padding: 30px;">Aucun produit. Ajoute-en un ou importe ton catalogue Shopify.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+
+    <h2 class="section-title" style="font-size:18px;">Dernieres commandes</h2>
+    <table class="table">
+      <thead>
+        <tr><th>Date</th><th>Moyen</th><th>Client</th><th>Total</th><th>Statut</th></tr>
+      </thead>
+      <tbody>
+        <% orders.forEach(function(o) { %>
+          <tr>
+            <td><%= new Date(o.created_at).toLocaleString('fr-FR') %></td>
+            <td><%= o.provider %></td>
+            <td><%= o.customer_email || '—' %></td>
+            <td><%= (o.total_cents/100).toLocaleString('fr-FR', {style:'currency', currency: o.currency || 'EUR'}) %></td>
+            <td><span class="badge <%= o.status %>"><%= o.status %></span></td>
+          </tr>
+        <% }); %>
+        <% if (orders.length === 0) { %>
+          <tr><td colspan="5" style="color: var(--text-dim); text-align:center; padding: 30px;">Pas encore de commande.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

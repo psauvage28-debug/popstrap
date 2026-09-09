@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ton panier — Popstrap</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <section class="wrap">
+    <h2 class="section-title">Ton panier</h2>
+    <div id="cart-container"></div>
+  </section>
+
+  <%- include('partials/footer') %>
+
+  <script>
+    function render() {
+      const items = readCart();
+      const container = document.getElementById('cart-container');
+
+      if (items.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>Ton panier est vide.</p><a href="/" class="btn btn-primary">Continuer mes achats</a></div>';
+        return;
+      }
+
+      const lines = items.map(function (item) {
+        return '<div class="cart-line">' +
+          '<img src="' + (item.image_url || 'https://placehold.co/100x100?text=Popstrap') + '" alt="">' +
+          '<div style="flex:1">' +
+            '<div class="line-title"></div>' +
+            '<div class="line-meta"></div>' +
+            '<span class="remove-link" data-id="' + item.id + '">Retirer</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      container.innerHTML =
+        '<div class="checkout-layout">' +
+          '<div>' + lines + '</div>' +
+          '<div class="cart-summary">' +
+            '<div class="summary-row"><span>Sous-total</span><span id="sum-subtotal"></span></div>' +
+            '<div class="summary-row total"><span>Total</span><span id="sum-total"></span></div>' +
+            '<a href="/checkout" class="btn btn-primary btn-block" style="margin-top:16px">Passer au paiement</a>' +
+          '</div>' +
+        '</div>';
+
+      // Remplit les titres/prix en texte (evite l'injection HTML via des noms de produits importes)
+      const lineEls = container.querySelectorAll('.cart-line');
+      lineEls.forEach(function (el, i) {
+        const item = items[i];
+        el.querySelector('.line-title').textContent = item.title;
+        el.querySelector('.line-meta').textContent = 'Qte ' + item.qty + ' · ' + formatPrice(item.price_cents * item.qty);
+      });
+
+      container.querySelectorAll('.remove-link').forEach(function (el) {
+        el.addEventListener('click', function () {
+          removeFromCart(el.dataset.id);
+          render();
+        });
+      });
+
+      const total = cartTotalCents();
+      document.getElementById('sum-subtotal').textContent = formatPrice(total);
+      document.getElementById('sum-total').textContent = formatPrice(total);
+    }
+
+    document.addEventListener('DOMContentLoaded', render);
+  </script>
+</body>
+</html>
