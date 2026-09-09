@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 const multer = require("multer");
 const db = require("../lib/db");
 const { requireAdmin } = require("../lib/authMiddleware");
@@ -7,9 +8,14 @@ const { parseShopifyCsv } = require("../lib/shopifyImport");
 
 const router = express.Router();
 
+// Meme logique que lib/db.js : en production (Render), UPLOADS_DIR pointe vers le disque
+// persistant pour que les photos ajoutees via l'admin survivent aux redeploiements.
+const uploadsDir = process.env.UPLOADS_DIR || path.join(__dirname, "..", "public", "uploads");
+fs.mkdirSync(uploadsDir, { recursive: true });
+
 const imageUpload = multer({
   storage: multer.diskStorage({
-    destination: path.join(__dirname, "..", "public", "uploads"),
+    destination: uploadsDir,
     filename: (req, file, cb) => {
       const ext = path.extname(file.originalname).toLowerCase();
       cb(null, `product-${Date.now()}${ext}`);

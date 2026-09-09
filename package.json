@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Site e-commerce Popstrap avec panneau d'administration auto-gere et paiement PayPal + Stripe",
   "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"

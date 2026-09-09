@@ -14,6 +14,9 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
+// Sert les photos uploadees via l'admin depuis le disque persistant en production
+// (voir UPLOADS_DIR dans routes/admin.js) -- sans effet en local, ou c'est deja dans /public.
+app.use("/uploads", express.static(process.env.UPLOADS_DIR || path.join(__dirname, "public", "uploads")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
