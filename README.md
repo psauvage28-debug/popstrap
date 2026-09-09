@@ -7,6 +7,12 @@ Site pour la marque Popstrap : boutique publique + panneau d'administration + pa
 ```bash
 npm install
 cp .env.example .env
+```
+
+Puis remplis `SUPABASE_URL` et `SUPABASE_SECRET_KEY` dans `.env` (voir `supabase-schema.sql` pour
+creer les tables une seule fois dans Supabase, section SQL Editor), et enfin :
+
+```bash
 npm start
 ```
 
@@ -50,14 +56,16 @@ Tout se passe dans `/admin`, sans toucher au code :
 
 ## Mettre le site en ligne
 
-Ce projet est un serveur Node.js classique (Express + SQLite), il peut etre deploye sur
-n'importe quel hebergeur qui supporte Node (Render, Railway, Fly.io, un VPS...). Il te faudra :
-- Definir les variables d'environnement de `.env` sur l'hebergeur choisi
-- Pointer ton nom de domaine popstrap vers l'hebergeur
-- Passer `PAYPAL_MODE=live` avec de vraies cles une fois pret a encaisser
+Deploiement prevu sur **Render** (plan gratuit) via le fichier `render.yaml` fourni (Blueprint) :
+1. Cree un compte sur https://dashboard.render.com (gratuit, "Sign up with GitHub" recommande)
+2. New -> Blueprint -> selectionne ce depot -> Apply
+3. Renseigne les variables demandees (SUPABASE_URL, SUPABASE_SECRET_KEY, ADMIN_USERNAME,
+   ADMIN_PASSWORD, STRIPE_PUBLISHABLE_KEY, STRIPE_SECRET_KEY, SITE_URL)
+4. Une fois en ligne, pointe ton nom de domaine vers l'URL Render (voir DNS de ton domaine)
 
 ## Stack technique
 
-- Node.js + Express (serveur), EJS (pages), SQLite via better-sqlite3 (catalogue + commandes)
-- Pas de dependance a un service tiers payant : SQLite est un simple fichier, aucun abonnement
+- Node.js + Express (serveur), EJS (pages)
+- Supabase (Postgres + stockage photos) pour le catalogue, les commandes et les images uploadees
+  depuis l'admin -- gratuit, et les donnees survivent aux redemarrages/redeploiements du serveur
 - PayPal Orders API + Stripe Checkout pour le paiement, prix toujours revalides cote serveur

@@ -10,9 +10,9 @@
   <%- include('partials/header') %>
 
   <%
-    const gallery = JSON.parse(product.gallery || '[]');
+    const gallery = product.gallery || [];
     const images = gallery.length ? gallery : [product.image_url];
-    const colors = JSON.parse(product.colors || '[]');
+    const colors = product.colors || [];
 
     const BENEFITS = {
       'bracelet-ceramique-royal-pop': { kicker: 'Collection Prestige', label: 'Matière', value: 'Biocéramique', label2: 'Surface', value2: 'Mate', punchline: 'Échange sans outil. Cinq secondes. Pas une de plus.' },

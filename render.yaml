@@ -2,18 +2,14 @@ services:
   - type: web
     name: popstrap-site
     runtime: node
-    plan: starter
+    plan: free
     buildCommand: npm install
     startCommand: npm start
-    disk:
-      name: popstrap-data
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
-      - key: DATA_DIR
-        value: /var/data/db
-      - key: UPLOADS_DIR
-        value: /var/data/uploads
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
       - key: SESSION_SECRET
         generateValue: true
       - key: ADMIN_USERNAME

@@ -1,26 +1,45 @@
 const express = require("express");
-const db = require("../lib/db");
+const { supabase } = require("../lib/db");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  const products = db
-    .prepare("SELECT * FROM products WHERE status = 'active' ORDER BY created_at DESC")
-    .all();
-  res.render("home", { products });
+router.get("/", async (req, res, next) => {
+  try {
+    const { data: products, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("status", "active")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    res.render("home", { products });
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.get("/produit/:handle", (req, res) => {
-  const product = db
-    .prepare("SELECT * FROM products WHERE handle = ? AND status = 'active'")
-    .get(req.params.handle);
-  if (!product) return res.status(404).render("404", { brand: req.app.locals.brand });
+router.get("/produit/:handle", async (req, res, next) => {
+  try {
+    const { data: product, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("handle", req.params.handle)
+      .eq("status", "active")
+      .maybeSingle();
+    if (error) throw error;
+    if (!product) return res.status(404).render("404", { brand: req.app.locals.brand });
 
-  const others = db
-    .prepare("SELECT * FROM products WHERE status = 'active' AND id != ? ORDER BY RANDOM() LIMIT 3")
-    .all(product.id);
+    const { data: others, error: othersError } = await supabase
+      .from("products")
+      .select("*")
+      .eq("status", "active")
+      .neq("id", product.id)
+      .limit(3);
+    if (othersError) throw othersError;
 
-  res.render("product", { product, others });
+    res.render("product", { product, others: others || [] });
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.get("/panier", (req, res) => {

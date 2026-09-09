@@ -3,6 +3,7 @@ require("dotenv").config({ path: path.join(__dirname, ".env") });
 const express = require("express");
 const session = require("express-session");
 
+const { seedIfEmpty } = require("./lib/db");
 const shopRoutes = require("./routes/shop");
 const adminRoutes = require("./routes/admin");
 const checkoutRoutes = require("./routes/checkout");
@@ -14,9 +15,6 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
-// Sert les photos uploadees via l'admin depuis le disque persistant en production
-// (voir UPLOADS_DIR dans routes/admin.js) -- sans effet en local, ou c'est deja dans /public.
-app.use("/uploads", express.static(process.env.UPLOADS_DIR || path.join(__dirname, "public", "uploads")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -48,6 +46,10 @@ app.use((req, res) => {
   res.status(404).render("404", { brand: app.locals.brand });
 });
 
-app.listen(PORT, () => {
-  console.log(`Popstrap tourne sur http://localhost:${PORT}`);
-});
+seedIfEmpty()
+  .catch((err) => console.error("Erreur d'amorcage des donnees:", err.message))
+  .finally(() => {
+    app.listen(PORT, () => {
+      console.log(`Popstrap tourne sur http://localhost:${PORT}`);
+    });
+  });

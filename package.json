@@ -11,8 +11,8 @@
     "dev": "node server.js"
   },
   "dependencies": {
-    "better-sqlite3": "^11.3.0",
-    "csv-parse": "^5.5.6",
+    "@supabase/supabase-js": "^2.116.0",
+    "csv-parse": "^7.0.2",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
