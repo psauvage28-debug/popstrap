@@ -6,7 +6,12 @@ const router = express.Router();
 
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) return null;
-  return require("stripe")(process.env.STRIPE_SECRET_KEY);
+  // maxNetworkRetries/timeout : Render a parfois des ratés de connexion sortante
+  // vers l'API Stripe (surtout au reveil d'un service gratuit) -> on reessaie.
+  return require("stripe")(process.env.STRIPE_SECRET_KEY, {
+    maxNetworkRetries: 3,
+    timeout: 20000,
+  });
 }
 
 // Recalcule le panier cote serveur a partir de la base (jamais confiance dans les prix envoyes par le client).
