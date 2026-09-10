@@ -15,7 +15,7 @@ router.get("/sitemap.xml", async (req, res, next) => {
     if (error) throw error;
 
     const base = req.app.locals.siteUrl;
-    const staticUrls = ["/", "/mentions-legales", "/cgv", "/confidentialite", "/livraison-retours", "/contact"];
+    const staticUrls = ["/", "/collections", "/mentions-legales", "/cgv", "/confidentialite", "/livraison-retours", "/contact"];
     const productUrls = (products || []).map((p) => `/produit/${p.handle}`);
 
     const urls = [...staticUrls, ...productUrls]

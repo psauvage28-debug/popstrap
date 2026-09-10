@@ -43,13 +43,16 @@
     <h2 class="section-title" style="font-size:18px;">Produits</h2>
     <table class="table" style="margin-bottom: 44px;">
       <thead>
-        <tr><th></th><th>Nom</th><th>Prix</th><th>Stock</th><th>Statut</th><th></th></tr>
+        <tr><th></th><th>Nom</th><th>Catalogue</th><th>Prix</th><th>Stock</th><th>Statut</th><th></th></tr>
       </thead>
       <tbody>
         <% products.forEach(function(p) { %>
           <tr>
             <td><img src="<%= p.image_url || 'https://placehold.co/80x80?text=%20' %>" alt=""></td>
             <td><%= p.title %></td>
+            <td style="color:var(--text-dim); font-size:13px;">
+              <%= p.collection === 'ceramique' ? 'Biocéramique' : p.collection === 'oyster' ? 'Oyster' : '—' %>
+            </td>
             <td><%= (p.price_cents/100).toLocaleString('fr-FR', {style:'currency', currency: p.currency || 'EUR'}) %></td>
             <td><%= p.stock %></td>
             <td><span class="badge <%= p.status %>"><%= p.status === 'active' ? 'Actif' : 'Brouillon' %></span></td>
@@ -64,7 +67,7 @@
           </tr>
         <% }); %>
         <% if (products.length === 0) { %>
-          <tr><td colspan="6" style="color: var(--text-dim); text-align:center; padding: 30px;">Aucun produit. Ajoute-en un ou importe ton catalogue Shopify.</td></tr>
+          <tr><td colspan="7" style="color: var(--text-dim); text-align:center; padding: 30px;">Aucun produit. Ajoute-en un ou importe ton catalogue Shopify.</td></tr>
         <% } %>
       </tbody>
     </table>

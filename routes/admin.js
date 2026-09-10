@@ -133,11 +133,11 @@ async function uploadProductImage(file) {
 
 async function saveProduct(req, res, next, id) {
   try {
-    const { title, description, price, compare_at_price, image_url, stock, status, colors_text, gallery_text } = req.body;
+    const { title, description, price, compare_at_price, image_url, stock, status, collection, colors_text, gallery_text } = req.body;
 
     if (!title || !price) {
       return res.render("admin/product-form", {
-        product: { id, title, description, price, compare_at_price, image_url, stock, status, colors_text, gallery_text },
+        product: { id, title, description, price, compare_at_price, image_url, stock, status, collection, colors_text, gallery_text },
         error: "Le nom et le prix sont obligatoires.",
       });
     }
@@ -163,6 +163,7 @@ async function saveProduct(req, res, next, id) {
       image_url: finalImage,
       colors,
       gallery,
+      collection: collection || null,
       stock: parseInt(stock, 10) || 0,
       status: status || "active",
       updated_at: new Date().toISOString(),

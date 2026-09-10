@@ -55,6 +55,16 @@
       </div>
 
       <div class="form-group">
+        <label>Catalogue</label>
+        <select name="collection">
+          <option value="" <%= !product || !product.collection ? 'selected' : '' %>>Aucun (hors catalogue)</option>
+          <option value="ceramique" <%= product && product.collection === 'ceramique' ? 'selected' : '' %>>Biocéramique</option>
+          <option value="oyster" <%= product && product.collection === 'oyster' ? 'selected' : '' %>>Oyster (caoutchouc)</option>
+        </select>
+        <p class="small-note">Determine dans quel catalogue de /collections ce produit apparait.</p>
+      </div>
+
+      <div class="form-group">
         <label>Image — URL</label>
         <input type="text" name="image_url" value="<%= product ? product.image_url : '' %>" placeholder="https://..." />
       </div>

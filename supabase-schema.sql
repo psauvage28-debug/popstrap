@@ -11,6 +11,7 @@ create table if not exists products (
   image_url text default '',
   gallery jsonb default '[]',
   colors jsonb default '[]',
+  collection text,
   stock integer not null default 0,
   status text not null default 'active',
   created_at timestamptz default now(),
@@ -35,5 +36,6 @@ create table if not exists settings (
   value text
 );
 
--- Migration : ajoute la colonne shipping_address si la table orders existe deja sans elle.
+-- Migrations (sans effet si deja appliquees) :
 alter table orders add column if not exists shipping_address jsonb;
+alter table products add column if not exists collection text;

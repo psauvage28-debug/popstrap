@@ -14,12 +14,13 @@
     const gallery = product.gallery || [];
     const images = gallery.length ? gallery : [product.image_url];
     const colors = product.colors || [];
+    const colorName = colors.length ? colors[0].name : null;
 
     const BENEFITS = {
-      'bracelet-ceramique-royal-pop': { kicker: 'Collection Prestige', label: 'Matière', value: 'Biocéramique', label2: 'Surface', value2: 'Mate', punchline: 'Échange sans outil. Cinq secondes. Pas une de plus.' },
-      'bracelet-caouchouc-rosso': { kicker: 'Collection Sport', label: 'Matière', value: 'Caoutchouc', label2: 'Résistance', value2: 'Waterproof', punchline: 'Il ne vous lâche pas. Vous non plus.' },
+      ceramique: { kicker: 'Collection Prestige', label: 'Matière', value: 'Biocéramique', label2: 'Surface', value2: 'Mate', punchline: 'Échange sans outil. Cinq secondes. Pas une de plus.' },
+      oyster: { kicker: 'Collection Sport', label: 'Matière', value: 'Caoutchouc', label2: 'Résistance', value2: 'Waterproof', punchline: 'Il ne vous lâche pas. Vous non plus.' },
     };
-    const benefit = BENEFITS[product.handle];
+    const benefit = BENEFITS[product.collection];
   %>
 
   <section class="wrap product-hero">
@@ -47,14 +48,10 @@
         <% } %>
       </div>
 
-      <% if (colors.length) { %>
+      <% if (colorName) { %>
         <div class="swatch-row">
-          <span class="swatch-label">Coloris — <span class="swatch-current" id="color-current"><%= colors[0].name %></span></span>
-          <div class="swatches">
-            <% colors.forEach(function(c, i) { %>
-              <button type="button" class="swatch-btn <%= i === 0 ? 'active' : '' %>" style="background:<%= c.hex %>" data-name="<%= c.name %>" data-image="<%= c.image || '' %>" title="<%= c.name %>"></button>
-            <% }); %>
-          </div>
+          <span class="swatch-label">Coloris — <span class="swatch-current"><%= colorName %></span></span>
+          <% if (colors[0].hex) { %><div class="swatches"><span class="swatch-btn active" style="background:<%= colors[0].hex %>"></span></div><% } %>
         </div>
       <% } %>
 
@@ -89,13 +86,13 @@
 
   <% if (others.length) { %>
   <section class="wrap reveal">
-    <h2 class="section-title">Tu aimeras aussi</h2>
+    <h2 class="section-title"><%= product.collection ? 'Les autres coloris de cette collection' : 'Tu aimeras aussi' %></h2>
     <div class="grid">
       <% others.forEach(function(p) { %>
         <a class="card tilt" href="/produit/<%= p.handle %>">
           <div class="card-img"><img src="<%= p.image_url || 'https://placehold.co/500x500?text=Popstrap' %>" alt="<%= p.title %>" /></div>
           <div class="card-body">
-            <p class="card-title"><%= p.title %></p>
+            <p class="card-title"><%= p.title.split('—')[1] ? p.title.split('—')[1].trim() : p.title %></p>
             <div class="price-row"><span class="price"><%= (p.price_cents/100).toLocaleString('fr-FR', {style:'currency', currency: p.currency || 'EUR'}) %></span></div>
           </div>
         </a>
@@ -127,38 +124,13 @@
       setTimeout(() => { window.location.href = '/panier'; }, 500);
     });
 
-    // Galerie : clic sur une vignette change la photo principale (et le coloris correspondant si connu)
+    // Galerie : clic sur une vignette change la photo principale
     const mainImage = document.getElementById('main-image');
     document.querySelectorAll('.product-gallery-thumbs img').forEach((thumb) => {
       thumb.addEventListener('click', () => {
         mainImage.src = thumb.dataset.src;
         document.querySelectorAll('.product-gallery-thumbs img').forEach((t) => t.classList.remove('active'));
         thumb.classList.add('active');
-
-        const matchingSwatch = Array.from(document.querySelectorAll('.swatch-btn')).find(
-          (b) => b.dataset.image === thumb.dataset.src
-        );
-        if (matchingSwatch) {
-          document.querySelectorAll('.swatch-btn').forEach((b) => b.classList.remove('active'));
-          matchingSwatch.classList.add('active');
-          if (colorCurrent) colorCurrent.textContent = matchingSwatch.dataset.name;
-        }
-      });
-    });
-
-    // Coloris : change la photo principale pour la vraie photo de ce coloris (le stock reste global au produit)
-    const colorCurrent = document.getElementById('color-current');
-    document.querySelectorAll('.swatch-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.swatch-btn').forEach((b) => b.classList.remove('active'));
-        btn.classList.add('active');
-        if (colorCurrent) colorCurrent.textContent = btn.dataset.name;
-        if (btn.dataset.image) {
-          mainImage.src = btn.dataset.image;
-          document.querySelectorAll('.product-gallery-thumbs img').forEach((t) => {
-            t.classList.toggle('active', t.dataset.src === btn.dataset.image);
-          });
-        }
       });
     });
   </script>

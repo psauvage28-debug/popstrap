@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <%- include('partials/head', {
+    pageTitle: 'La boutique — Popstrap',
+    pageDescription: 'Tous les bracelets Popstrap, biocéramique et caoutchouc, dans tous les coloris Royal Pop.'
+  }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <section class="wrap catalog-intro reveal">
+    <span class="section-eyebrow">La boutique</span>
+    <h1 class="section-title">Deux collections, dix-huit coloris</h1>
+    <p>Chaque bracelet existe en pièce unique par coloris — biocéramique pour l'élégance, caoutchouc pour le sport.</p>
+  </section>
+
+  <% if (ceramique.length) { %>
+    <section class="wrap reveal" id="ceramique">
+      <span class="section-eyebrow">Collection Prestige</span>
+      <h2 class="section-title">Biocéramique</h2>
+      <div class="grid">
+        <% ceramique.forEach(function(p) { %>
+          <a class="card tilt" href="/produit/<%= p.handle %>">
+            <div class="card-img">
+              <img src="<%= p.image_url || 'https://placehold.co/500x500?text=Popstrap' %>" alt="<%= p.title %>" loading="lazy" />
+            </div>
+            <div class="card-body">
+              <p class="card-title"><%= p.title.split('—')[1] ? p.title.split('—')[1].trim() : p.title %></p>
+              <div class="price-row">
+                <span class="price"><%= (p.price_cents/100).toLocaleString('fr-FR', {style:'currency', currency: p.currency || 'EUR'}) %></span>
+              </div>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    </section>
+  <% } %>
+
+  <% if (oyster.length) { %>
+    <section class="wrap reveal" id="oyster">
+      <span class="section-eyebrow">Collection Sport</span>
+      <h2 class="section-title">Caoutchouc premium</h2>
+      <div class="grid">
+        <% oyster.forEach(function(p) { %>
+          <a class="card tilt" href="/produit/<%= p.handle %>">
+            <div class="card-img">
+              <img src="<%= p.image_url || 'https://placehold.co/500x500?text=Popstrap' %>" alt="<%= p.title %>" loading="lazy" />
+            </div>
+            <div class="card-body">
+              <p class="card-title"><%= p.title.split('—')[1] ? p.title.split('—')[1].trim() : p.title %></p>
+              <div class="price-row">
+                <span class="price"><%= (p.price_cents/100).toLocaleString('fr-FR', {style:'currency', currency: p.currency || 'EUR'}) %></span>
+              </div>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    </section>
+  <% } %>
+
+  <% if (autres && autres.length) { %>
+    <section class="wrap reveal" id="autres">
+      <span class="section-eyebrow">Autres produits</span>
+      <h2 class="section-title">Le reste de la boutique</h2>
+      <div class="grid">
+        <% autres.forEach(function(p) { %>
+          <a class="card tilt" href="/produit/<%= p.handle %>">
+            <div class="card-img">
+              <img src="<%= p.image_url || 'https://placehold.co/500x500?text=Popstrap' %>" alt="<%= p.title %>" loading="lazy" />
+            </div>
+            <div class="card-body">
+              <p class="card-title"><%= p.title %></p>
+              <div class="price-row">
+                <span class="price"><%= (p.price_cents/100).toLocaleString('fr-FR', {style:'currency', currency: p.currency || 'EUR'}) %></span>
+              </div>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    </section>
+  <% } %>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

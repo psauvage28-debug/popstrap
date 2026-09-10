@@ -19,7 +19,7 @@
       <span class="hero-eyebrow">Collection Royal Pop</span>
       <h1 class="slide-title" id="mainTitle"></h1>
       <p class="slide-description" id="mainDesc"></p>
-      <a href="#produits" class="btn btn-primary">Découvrir la collection</a>
+      <a href="/collections" class="btn btn-primary">Découvrir la collection</a>
     </div>
 
     <nav class="slides-navigation" id="slidesNav"></nav>
@@ -36,22 +36,22 @@
         <p class="lede">Une montre exigeante ne devrait pas être un luxe.</p>
         <p>Tout est parti d'une passion commune pour les montres. À force d'en chercher, un constat s'est imposé : entre l'entrée de gamme décevante et les modèles dont le prix reflète surtout un nom, il manquait quelque chose.</p>
         <p>POPSTRAP est né de cette conviction. Des pièces pensées pour durer, se réparer, se transmettre — sans se ruiner.</p>
-        <a href="#produits" class="btn btn-outline">Voir les bracelets</a>
+        <a href="/collections" class="btn btn-outline">Voir les bracelets</a>
       </div>
     </div>
   </section>
 
   <section class="collections wrap">
-    <% const ceramique = products.find(p => p.handle === 'bracelet-ceramique-royal-pop'); %>
-    <% const oyster = products.find(p => p.handle === 'bracelet-caouchouc-rosso'); %>
+    <% const ceramiqueLead = ceramique[0]; %>
+    <% const oysterLead = oyster[0]; %>
 
-    <% if (ceramique) { %>
+    <% if (ceramiqueLead) { %>
       <div class="collection-row reveal">
         <div class="collection-media tilt">
-          <img src="<%= ceramique.image_url %>" alt="<%= ceramique.title %>" />
+          <img src="<%= ceramiqueLead.image_url %>" alt="Collection Biocéramique" />
         </div>
         <div class="collection-copy">
-          <span class="kicker">Collection Prestige</span>
+          <span class="kicker">Collection Prestige — <%= ceramique.length %> coloris</span>
           <h3>Biocéramique</h3>
           <p>Le mariage de la haute horlogerie et du design contemporain. Une matière d'exception utilisée par les plus grandes maisons horlogères — légère, hypoallergénique, résistante aux rayures.</p>
           <p>Sa surface mate absorbe la lumière avec une élégance qui ne cherche pas à se montrer.</p>
@@ -60,18 +60,18 @@
             <div><span class="tag-label">Surface</span><span class="tag-value">Mate</span></div>
             <div><span class="tag-label">Compatibilité</span><span class="tag-value">Royal Pop</span></div>
           </div>
-          <a href="/produit/<%= ceramique.handle %>" class="btn btn-primary">Acheter maintenant</a>
+          <a href="/collections#ceramique" class="btn btn-primary">Voir les <%= ceramique.length %> coloris</a>
         </div>
       </div>
     <% } %>
 
-    <% if (oyster) { %>
+    <% if (oysterLead) { %>
       <div class="collection-row reveal">
         <div class="collection-media tilt">
-          <img src="<%= oyster.image_url %>" alt="<%= oyster.title %>" />
+          <img src="<%= oysterLead.image_url %>" alt="Collection Oyster" />
         </div>
         <div class="collection-copy">
-          <span class="kicker">Collection Sport</span>
+          <span class="kicker">Collection Sport — <%= oyster.length %> coloris</span>
           <h3>Caoutchouc premium</h3>
           <p>Conçue pour ceux qui ne s'arrêtent jamais. Caoutchouc premium texturé — souple, waterproof, résistant aux chocs. Un maintien parfait, une légèreté qu'on oublie vite de porter.</p>
           <p>Le POPSTRAP donne à votre montre un caractère sport et urbain, en salle, en ville, en week-end.</p>
@@ -80,7 +80,7 @@
             <div><span class="tag-label">Résistance</span><span class="tag-value">Waterproof</span></div>
             <div><span class="tag-label">Compatibilité</span><span class="tag-value">Royal Pop</span></div>
           </div>
-          <a href="/produit/<%= oyster.handle %>" class="btn btn-primary">Acheter maintenant</a>
+          <a href="/collections#oyster" class="btn btn-primary">Voir les <%= oyster.length %> coloris</a>
         </div>
       </div>
     <% } %>
@@ -88,33 +88,30 @@
 
   <section class="wrap reveal" id="produits">
     <span class="section-eyebrow">Nos produits</span>
-    <h2 class="section-title">La boutique</h2>
-    <% if (products.length === 0) { %>
+    <h2 class="section-title">Un aperçu de la boutique</h2>
+    <% if (featured.length === 0) { %>
       <p style="color: var(--text-dim)">Aucun produit pour le moment. Reviens bientot !</p>
     <% } else { %>
       <div class="grid">
-        <% products.forEach(function(p) { %>
-          <% const colors = p.colors || []; %>
+        <% featured.forEach(function(p) { %>
           <a class="card tilt" href="/produit/<%= p.handle %>">
             <div class="card-img">
               <img src="<%= p.image_url || 'https://placehold.co/500x500?text=Popstrap' %>" alt="<%= p.title %>" loading="lazy" />
             </div>
             <div class="card-body">
-              <p class="card-title"><%= p.title %></p>
+              <p class="card-title"><%= p.title.split('—')[1] ? p.title.split('—')[1].trim() : p.title %></p>
               <div class="price-row">
                 <span class="price"><%= (p.price_cents/100).toLocaleString('fr-FR', {style:'currency', currency: p.currency || 'EUR'}) %></span>
                 <% if (p.compare_at_price_cents) { %>
                   <span class="price-old"><%= (p.compare_at_price_cents/100).toLocaleString('fr-FR', {style:'currency', currency: p.currency || 'EUR'}) %></span>
                 <% } %>
               </div>
-              <% if (colors.length) { %>
-                <div class="color-dots">
-                  <% colors.slice(0,6).forEach(function(c){ %><span style="background:<%= c.hex %>"></span><% }) %>
-                </div>
-              <% } %>
             </div>
           </a>
         <% }); %>
+      </div>
+      <div style="text-align:center; margin-top: 10px;">
+        <a href="/collections" class="btn btn-outline">Voir toute la boutique (<%= products.length %> produits)</a>
       </div>
     <% } %>
   </section>
