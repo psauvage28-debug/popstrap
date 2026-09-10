@@ -197,46 +197,6 @@ router.get("/import", (req, res) => {
   res.render("admin/import", { result: null, error: null });
 });
 
-// TEMPORAIRE : diagnostic de connexion sortante vers Stripe (a retirer une fois le probleme resolu).
-router.get("/debug-stripe", async (req, res) => {
-  const https = require("https");
-  const dns = require("dns");
-  const results = {};
-  try {
-    results.dns = await new Promise((resolve, reject) => {
-      dns.lookup("api.stripe.com", { all: true }, (err, addresses) => (err ? reject(err) : resolve(addresses)));
-    });
-  } catch (err) {
-    results.dnsError = { message: err.message, code: err.code };
-  }
-  try {
-    const raw = await new Promise((resolve, reject) => {
-      const req2 = https.request(
-        { hostname: "api.stripe.com", path: "/v1/balance", method: "GET", auth: process.env.STRIPE_SECRET_KEY + ":", timeout: 15000 },
-        (r) => {
-          let body = "";
-          r.on("data", (d) => (body += d));
-          r.on("end", () => resolve({ status: r.statusCode, body: body.slice(0, 300) }));
-        }
-      );
-      req2.on("error", (err) => reject(err));
-      req2.on("timeout", () => { req2.destroy(); reject(new Error("timeout")); });
-      req2.end();
-    });
-    results.rawHttpsCall = raw;
-  } catch (err) {
-    results.rawHttpsCallError = { message: err.message, code: err.code, syscall: err.syscall, address: err.address, port: err.port };
-  }
-  try {
-    const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY, { maxNetworkRetries: 0, timeout: 15000 });
-    const balance = await stripe.balance.retrieve();
-    results.stripeSdkCall = { ok: true, livemode: balance.livemode };
-  } catch (err) {
-    results.stripeSdkCallError = { message: err.message, type: err.type, code: err.code, detail: err.detail && err.detail.message };
-  }
-  res.json(results);
-});
-
 router.post("/import", csvUpload.single("csv_file"), async (req, res) => {
   try {
     if (!req.file) throw new Error("Choisis un fichier CSV a importer.");
