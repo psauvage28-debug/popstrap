@@ -26,6 +26,7 @@ create table if not exists orders (
   currency text not null default 'EUR',
   status text not null default 'pending',
   items_json jsonb not null,
+  shipping_address jsonb,
   created_at timestamptz default now()
 );
 
@@ -33,3 +34,6 @@ create table if not exists settings (
   key text primary key,
   value text
 );
+
+-- Migration : ajoute la colonne shipping_address si la table orders existe deja sans elle.
+alter table orders add column if not exists shipping_address jsonb;

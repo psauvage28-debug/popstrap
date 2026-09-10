@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <%- include('partials/head', { pageTitle: 'Conditions générales de vente — Popstrap', pageDescription: 'Conditions générales de vente du site Popstrap.' }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <section class="wrap legal-page">
+    <h1 class="section-title">Conditions générales de vente</h1>
+    <p class="legal-updated">Dernière mise à jour : <%= new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long' }) %></p>
+
+    <h2>1. Objet</h2>
+    <p>
+      Les présentes conditions générales de vente régissent les ventes de bracelets Popstrap
+      réalisées sur le site popstrap.com.co, édité par Nils Boulhaya et Paul Sauvage Girard
+      (micro-entreprise, SIRET 732 829 320 00074).
+    </p>
+
+    <h2>2. Prix</h2>
+    <p>
+      Les prix sont indiqués en euros, toutes taxes comprises (TTC). Popstrap se réserve le droit
+      de modifier ses prix à tout moment, étant entendu que le prix figurant sur le site le jour
+      de la commande sera le seul applicable à l'acheteur.
+    </p>
+
+    <h2>3. Commande et paiement</h2>
+    <p>
+      La commande est validée après confirmation du paiement, effectué de manière sécurisée via
+      Stripe (carte bancaire) et/ou PayPal lorsque ce moyen est activé. Aucune donnée bancaire
+      n'est stockée ou traitée directement par Popstrap.
+    </p>
+
+    <h2>4. Livraison</h2>
+    <p>
+      Voir notre page <a href="/livraison-retours">Livraison &amp; retours</a> pour les délais,
+      frais et zones de livraison.
+    </p>
+
+    <h2>5. Droit de rétractation</h2>
+    <p>
+      Conformément aux articles L221-18 et suivants du Code de la consommation, vous disposez
+      d'un délai de <strong>14 jours</strong> à compter de la réception de votre commande pour
+      exercer votre droit de rétractation, sans avoir à justifier de motif ni à payer de pénalité,
+      à l'exception, le cas échéant, des frais de retour. Pour exercer ce droit, contactez-nous à
+      <a href="mailto:psauvage28@gmail.com">psauvage28@gmail.com</a>. Voir aussi notre page
+      <a href="/livraison-retours">Livraison &amp; retours</a>.
+    </p>
+
+    <h2>6. Garanties</h2>
+    <p>
+      Tous nos produits bénéficient de la garantie légale de conformité (articles L217-3 et
+      suivants du Code de la consommation) et de la garantie légale contre les vices cachés
+      (articles 1641 et suivants du Code civil).
+    </p>
+
+    <h2>7. Responsabilité</h2>
+    <p>
+      Popstrap ne saurait être tenu responsable des dommages résultant d'une mauvaise utilisation
+      du produit acheté ou d'un cas de force majeure.
+    </p>
+
+    <h2>8. Litiges</h2>
+    <p>
+      En cas de litige, l'acheteur peut recourir à une médiation conventionnelle. À défaut
+      d'accord amiable, les tribunaux français seront seuls compétents.
+    </p>
+
+    <h2>9. Contact</h2>
+    <p>
+      Pour toute question relative à ces conditions générales de vente :
+      <a href="mailto:psauvage28@gmail.com">psauvage28@gmail.com</a>.
+    </p>
+  </section>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

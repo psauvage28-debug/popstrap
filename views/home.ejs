@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Popstrap — Une montre exigeante ne devrait pas être un luxe</title>
-  <link rel="stylesheet" href="/css/style.css" />
+  <%- include('partials/head', {
+    pageTitle: 'Popstrap — Une montre exigeante ne devrait pas être un luxe',
+    pageDescription: "Des bracelets pensés pour donner une seconde vie à votre montre Royal Pop — biocéramique, caoutchouc premium, échange sans outil en cinq secondes.",
+    pageImage: '/img/hero-banner.jpg'
+  }) %>
 </head>
 <body>
   <%- include('partials/header') %>

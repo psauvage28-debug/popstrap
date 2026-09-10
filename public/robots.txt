@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin
+Disallow: /checkout
+Disallow: /panier
+
+Sitemap: https://popstrap.com.co/sitemap.xml

@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><%= product.title %> — Popstrap</title>
-  <link rel="stylesheet" href="/css/style.css" />
+  <%- include('partials/head', {
+    pageTitle: product.title + ' — Popstrap',
+    pageDescription: product.description,
+    pageImage: product.image_url
+  }) %>
 </head>
 <body>
   <%- include('partials/header') %>
@@ -122,7 +123,8 @@
     });
     document.getElementById('add-to-cart-btn').addEventListener('click', () => {
       addToCart(PRODUCT, parseInt(qtyInput.value, 10));
-      window.location.href = '/panier';
+      showToast('Ajouté au panier ✓');
+      setTimeout(() => { window.location.href = '/panier'; }, 500);
     });
 
     // Galerie : clic sur une vignette change la photo principale (et le coloris correspondant si connu)

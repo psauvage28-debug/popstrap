@@ -61,4 +61,19 @@ function updateCartCount() {
   el.textContent = count;
 }
 
+// Petit message de confirmation en bas de l'ecran (ex: "Ajoute au panier").
+function showToast(message) {
+  let toast = document.getElementById("cart-toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "cart-toast";
+    toast.className = "cart-toast";
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add("visible");
+  clearTimeout(toast._hideTimer);
+  toast._hideTimer = setTimeout(() => toast.classList.remove("visible"), 1800);
+}
+
 document.addEventListener("DOMContentLoaded", updateCartCount);

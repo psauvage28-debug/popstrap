@@ -1,10 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin — Popstrap</title>
-  <link rel="stylesheet" href="/css/style.css" />
+  <%- include('../partials/head', { pageTitle: 'Admin — Popstrap', pageNoindex: true }) %>
 </head>
 <body>
   <header class="site-header">
@@ -75,7 +72,7 @@
     <h2 class="section-title" style="font-size:18px;">Dernieres commandes</h2>
     <table class="table">
       <thead>
-        <tr><th>Date</th><th>Moyen</th><th>Client</th><th>Total</th><th>Statut</th></tr>
+        <tr><th>Date</th><th>Moyen</th><th>Client</th><th>Livraison</th><th>Total</th><th>Statut</th></tr>
       </thead>
       <tbody>
         <% orders.forEach(function(o) { %>
@@ -83,12 +80,22 @@
             <td><%= new Date(o.created_at).toLocaleString('fr-FR') %></td>
             <td><%= o.provider %></td>
             <td><%= o.customer_email || '—' %></td>
+            <td>
+              <% if (o.shipping_address) { %>
+                <span title="<%= [o.shipping_address.name, o.shipping_address.line1, o.shipping_address.line2, o.shipping_address.postal_code, o.shipping_address.city, o.shipping_address.country, o.shipping_address.phone].filter(Boolean).join(', ') %>">
+                  <%= o.shipping_address.name || '' %><br/>
+                  <span style="color:var(--text-dim); font-size:12px;"><%= [o.shipping_address.postal_code, o.shipping_address.city].filter(Boolean).join(' ') %></span>
+                </span>
+              <% } else { %>
+                <span style="color:var(--text-dim);">—</span>
+              <% } %>
+            </td>
             <td><%= (o.total_cents/100).toLocaleString('fr-FR', {style:'currency', currency: o.currency || 'EUR'}) %></td>
             <td><span class="badge <%= o.status %>"><%= o.status %></span></td>
           </tr>
         <% }); %>
         <% if (orders.length === 0) { %>
-          <tr><td colspan="5" style="color: var(--text-dim); text-align:center; padding: 30px;">Pas encore de commande.</td></tr>
+          <tr><td colspan="6" style="color: var(--text-dim); text-align:center; padding: 30px;">Pas encore de commande.</td></tr>
         <% } %>
       </tbody>
     </table>

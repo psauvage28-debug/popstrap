@@ -550,6 +550,39 @@ img { max-width: 100%; display: block; }
 .site-footer .social a { color: var(--text-dim); transition: color 0.2s; }
 .site-footer .social a:hover { color: var(--accent-soft); }
 
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 22px;
+  margin-bottom: 20px;
+}
+.footer-links a { color: var(--text-dim); transition: color 0.2s; }
+.footer-links a:hover { color: var(--accent-soft); }
+
+/* Pages legales / contact */
+.legal-page {
+  max-width: 720px;
+  padding: 60px 24px 100px;
+  color: var(--text-dim);
+  line-height: 1.75;
+}
+.legal-page h1 { margin-bottom: 8px; }
+.legal-page h2 {
+  font-family: var(--serif);
+  color: var(--lilac);
+  font-size: 22px;
+  font-weight: 500;
+  margin: 34px 0 10px;
+}
+.legal-page p { margin: 0 0 6px; }
+.legal-page a { color: var(--accent-soft); text-decoration: underline; }
+.legal-updated { font-size: 13px; color: var(--text-dim); opacity: 0.7; margin-bottom: 30px; }
+.legal-note { font-size: 13px; opacity: 0.7; font-style: italic; }
+
+.legal-page.center-contact { text-align: center; margin: 0 auto; }
+.contact-card { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 30px 0; }
+
 /* Cart / checkout */
 .cart-line {
   display: flex;
@@ -651,3 +684,24 @@ img { max-width: 100%; display: block; }
 .pay-buttons { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
 
 .center-py { padding: 100px 0; text-align: center; }
+
+.cart-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translate(-50%, 20px);
+  background: var(--card);
+  border: 1px solid var(--accent-soft);
+  color: var(--text);
+  padding: 14px 24px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  box-shadow: 0 20px 50px -15px rgba(0,0,0,0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 200;
+}
+.cart-toast.visible { opacity: 1; transform: translate(-50%, 0); }

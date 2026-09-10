@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <%- include('partials/head', { pageTitle: 'Politique de confidentialité — Popstrap', pageDescription: 'Comment Popstrap collecte et utilise vos données personnelles.' }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <section class="wrap legal-page">
+    <h1 class="section-title">Politique de confidentialité</h1>
+    <p class="legal-updated">Dernière mise à jour : <%= new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long' }) %></p>
+
+    <h2>1. Qui traite vos données ?</h2>
+    <p>
+      Popstrap (Nils Boulhaya et Paul Sauvage Girard, SIRET 732 829 320 00074) est responsable du
+      traitement des données personnelles collectées sur ce site.
+    </p>
+
+    <h2>2. Quelles données sont collectées ?</h2>
+    <p>
+      Lors d'une commande : nom, adresse de livraison, adresse email, et informations de paiement
+      (traitées directement par Stripe et/ou PayPal — Popstrap n'a jamais accès à vos coordonnées
+      bancaires complètes).
+    </p>
+
+    <h2>3. Pourquoi ces données sont-elles collectées ?</h2>
+    <p>
+      Uniquement pour traiter, expédier et suivre votre commande, et pour vous contacter en cas de
+      besoin concernant celle-ci.
+    </p>
+
+    <h2>4. Qui a accès à vos données ?</h2>
+    <p>
+      Popstrap, ainsi que ses prestataires techniques strictement nécessaires au fonctionnement du
+      site : Stripe et PayPal (paiement), Supabase (hébergement de la base de données), Render
+      (hébergement du site). Aucune donnée n'est vendue ou transmise à des tiers à des fins
+      commerciales.
+    </p>
+
+    <h2>5. Combien de temps sont-elles conservées ?</h2>
+    <p>
+      Les données liées à une commande sont conservées le temps nécessaire à son traitement et aux
+      obligations légales de conservation comptable (10 ans pour les documents commerciaux).
+    </p>
+
+    <h2>6. Vos droits</h2>
+    <p>
+      Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un
+      droit d'accès, de rectification, d'effacement et de portabilité de vos données. Pour exercer
+      ces droits, contactez-nous à <a href="mailto:psauvage28@gmail.com">psauvage28@gmail.com</a>.
+    </p>
+
+    <h2>7. Cookies</h2>
+    <p>
+      Ce site utilise uniquement des cookies techniques nécessaires à son fonctionnement (panier,
+      session). Aucun cookie publicitaire ou de tracking tiers n'est utilisé.
+    </p>
+  </section>
+
+  <%- include('partials/footer') %>
+</body>
+</html>
